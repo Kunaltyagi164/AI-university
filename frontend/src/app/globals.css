@@ -1,0 +1,315 @@
+@import "tailwindcss";
+
+@theme {
+  --color-theme-bg: var(--background);
+  --color-theme-fg: var(--foreground);
+  --color-theme-card: var(--card);
+  --color-theme-card-hover: var(--card-hover);
+  --color-theme-border: var(--border);
+  --color-theme-border-active: var(--border-active);
+  --color-theme-primary: var(--primary);
+  --color-theme-secondary: var(--secondary);
+}
+
+:root {
+  --background: #06060c;
+  --foreground: #f1f3f9;
+  --card: rgba(13, 13, 26, 0.7);
+  --card-hover: rgba(22, 22, 45, 0.95);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-active: rgba(139, 92, 246, 0.4);
+  
+  --primary: #8b5cf6;
+  --primary-rgb: 139, 92, 246;
+  --secondary: #06b6d4;
+  --secondary-rgb: 6, 182, 212;
+  --accent: #d946ef;
+  
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+
+  /* Input surface tokens */
+  --input-bg: #0a0a14;
+  --input-border: rgba(255, 255, 255, 0.1);
+  --input-text: #f1f3f9;
+  --input-placeholder: #4b5563;
+}
+
+html.light {
+  --background: #f4f6fb;
+  --foreground: #0f172a;
+  --card: rgba(255, 255, 255, 0.92);
+  --card-hover: rgba(241, 245, 249, 0.98);
+  --border: rgba(15, 23, 42, 0.09);
+  --border-active: rgba(124, 58, 237, 0.55);
+  
+  --primary: #7c3aed;
+  --secondary: #0891b2;
+  --accent: #c026d3;
+
+  /* Input surface tokens — light */
+  --input-bg: #ffffff;
+  --input-border: rgba(15, 23, 42, 0.15);
+  --input-text: #0f172a;
+  --input-placeholder: #94a3b8;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Outfit', sans-serif;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(at 10% 20%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
+    radial-gradient(at 90% 80%, rgba(6, 182, 212, 0.06) 0px, transparent 50%);
+  background-attachment: fixed;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+html.light body {
+  background-image: 
+    radial-gradient(at 10% 20%, rgba(124, 58, 237, 0.04) 0px, transparent 50%),
+    radial-gradient(at 90% 80%, rgba(8, 145, 178, 0.03) 0px, transparent 50%);
+}
+
+/* ─── Glassmorphism panel ─────────────────────────── */
+.glass-panel {
+  background: var(--card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+html.light .glass-panel {
+  box-shadow: 0 4px 20px 0 rgba(15, 23, 42, 0.06);
+}
+
+.glass-panel-interactive {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.glass-panel-interactive:hover {
+  background: var(--card-hover);
+  border-color: var(--border-active);
+  box-shadow: 0 12px 40px 0 rgba(139, 92, 246, 0.15);
+  transform: translateY(-2px);
+}
+
+html.light .glass-panel-interactive:hover {
+  box-shadow: 0 8px 30px 0 rgba(124, 58, 237, 0.08);
+}
+
+/* ─── Neon glows ──────────────────────────────────── */
+.neon-glow-primary { box-shadow: 0 0 15px rgba(139, 92, 246, 0.3); }
+html.light .neon-glow-primary { box-shadow: 0 0 10px rgba(124, 58, 237, 0.12); }
+.neon-glow-secondary { box-shadow: 0 0 15px rgba(6, 182, 212, 0.3); }
+
+/* ─── Custom Scrollbar ────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--background); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+/* ─── Waveform animation ──────────────────────────── */
+@keyframes voice-wave {
+  0%, 100% { height: 8px; }
+  50% { height: 48px; }
+}
+
+.wave-bar {
+  display: inline-block;
+  width: 4px;
+  background: #06b6d4;
+  border-radius: 2px;
+  animation: voice-wave 1.2s ease-in-out infinite;
+}
+
+.wave-bar:nth-child(2) { animation-delay: 0.1s; background: #3b82f6; }
+.wave-bar:nth-child(3) { animation-delay: 0.2s; background: #6366f1; }
+.wave-bar:nth-child(4) { animation-delay: 0.3s; background: #8b5cf6; }
+.wave-bar:nth-child(5) { animation-delay: 0.4s; background: #d946ef; }
+.wave-bar:nth-child(6) { animation-delay: 0.5s; background: #8b5cf6; }
+.wave-bar:nth-child(7) { animation-delay: 0.6s; background: #6366f1; }
+.wave-bar:nth-child(8) { animation-delay: 0.7s; background: #3b82f6; }
+.wave-bar:nth-child(9) { animation-delay: 0.8s; background: #06b6d4; }
+
+/* ═══════════════════════════════════════════════════
+   LIGHT MODE INTERCEPTORS
+   ═══════════════════════════════════════════════════ */
+
+/* ── Hardcoded background hex overrides ── */
+html.light .bg-\[\#05050a\],
+html.light .bg-\[\#05050c\] { background-color: #eef2f8 !important; }
+
+html.light .bg-\[\#06060c\] { background-color: var(--background) !important; }
+
+html.light .bg-\[\#07070d\],
+html.light .bg-\[\#07070e\] { background-color: #e8edf5 !important; }
+
+html.light .bg-\[\#080810\],
+html.light .bg-\[\#080812\] { background-color: #edf1f8 !important; }
+
+html.light .bg-\[\#090912\],
+html.light .bg-\[\#090914\],
+html.light .bg-\[\#090916\] { background-color: #e4e9f3 !important; }
+
+html.light .bg-\[\#0a0a14\],
+html.light .bg-\[\#0a0a16\] { background-color: #dde4f0 !important; }
+
+html.light .bg-\[\#0b0b14\] { background-color: #d6dded !important; }
+
+html.light .bg-\[\#0c0c16\] { background-color: #e4e9f3 !important; }
+
+/* ── White-alpha surfaces → dark-alpha for contrast ── */
+html.light .bg-white\/5  { background-color: rgba(15, 23, 42, 0.05) !important; }
+html.light .bg-white\/10 { background-color: rgba(15, 23, 42, 0.08) !important; }
+html.light .hover\:bg-white\/5:hover  { background-color: rgba(15, 23, 42, 0.07) !important; }
+html.light .hover\:bg-white\/10:hover { background-color: rgba(15, 23, 42, 0.11) !important; }
+
+/* ── Purple/violet tinted surfaces ── */
+html.light .bg-purple-950\/10 { background-color: rgba(109, 40, 217, 0.07) !important; }
+html.light .bg-purple-950\/20 { background-color: rgba(109, 40, 217, 0.09) !important; }
+html.light .bg-purple-950\/40 { background-color: rgba(109, 40, 217, 0.12) !important; }
+html.light .bg-purple-500\/10 { background-color: rgba(109, 40, 217, 0.10) !important; }
+html.light .bg-purple-600\/20 { background-color: rgba(109, 40, 217, 0.12) !important; }
+
+/* ── Cyan tinted surfaces ── */
+html.light .bg-cyan-950\/10  { background-color: rgba(8, 145, 178, 0.07) !important; }
+html.light .bg-cyan-950\/20  { background-color: rgba(8, 145, 178, 0.09) !important; }
+html.light .bg-cyan-500\/10  { background-color: rgba(8, 145, 178, 0.09) !important; }
+
+/* ── Red/emerald tinted surfaces ── */
+html.light .bg-red-950\/10   { background-color: rgba(220, 38, 38, 0.07) !important; }
+html.light .bg-emerald-500\/10 { background-color: rgba(16, 185, 129, 0.09) !important; }
+
+/* ═══════════════════════════════════════════════════
+   TEXT CONTRAST FIXES
+   ═══════════════════════════════════════════════════ */
+
+html.light .text-white   { color: #0f172a !important; }
+html.light .text-gray-200 { color: #1e293b !important; }
+html.light .text-gray-300 { color: #334155 !important; }
+html.light .text-gray-400 { color: #475569 !important; }
+html.light .text-gray-500 { color: #64748b !important; }
+html.light .text-gray-600 { color: #64748b !important; }
+html.light .text-gray-700 { color: #475569 !important; }
+
+/* Purple text — darken for legibility on light bg */
+html.light .text-purple-400 { color: #7c3aed !important; }
+html.light .text-purple-300 { color: #6d28d9 !important; }
+html.light .hover\:text-purple-300:hover { color: #5b21b6 !important; }
+
+/* Cyan text — darken significantly on light bg */
+html.light .text-cyan-400  { color: #0369a1 !important; }
+html.light .text-cyan-300  { color: #0284c7 !important; }
+
+/* Amber/emerald/red — keep but slightly darken */
+html.light .text-amber-400  { color: #b45309 !important; }
+html.light .text-emerald-400 { color: #059669 !important; }
+html.light .text-emerald-300 { color: #047857 !important; }
+html.light .text-red-400    { color: #dc2626 !important; }
+html.light .text-red-300    { color: #b91c1c !important; }
+html.light .text-pink-400   { color: #db2777 !important; }
+
+/* hover:text-white → dark fg on light */
+html.light .hover\:text-white:hover    { color: #0f172a !important; }
+html.light .hover\:text-theme-fg:hover { color: #0f172a !important; }
+html.light .hover\:text-red-400:hover  { color: #dc2626 !important; }
+
+/* ═══════════════════════════════════════════════════
+   BORDER FIXES
+   ═══════════════════════════════════════════════════ */
+
+html.light .border-white\/\[0\.04\] { border-color: rgba(15, 23, 42, 0.09) !important; }
+html.light .border-white\/\[0\.05\] { border-color: rgba(15, 23, 42, 0.09) !important; }
+html.light .border-white\/\[0\.06\] { border-color: rgba(15, 23, 42, 0.09) !important; }
+html.light .border-white\/5        { border-color: rgba(15, 23, 42, 0.09) !important; }
+html.light .border-white\/10       { border-color: rgba(15, 23, 42, 0.14) !important; }
+html.light .border-white\/20       { border-color: rgba(124, 58, 237, 0.4) !important; }
+html.light .border-\[rgba\(255\,255\,255\,0\.08\)\] { border-color: rgba(15, 23, 42, 0.09) !important; }
+
+/* Purple/cyan borders stay, just adjusted opacity */
+html.light .border-purple-500\/20  { border-color: rgba(109, 40, 217, 0.25) !important; }
+html.light .border-purple-500\/25  { border-color: rgba(109, 40, 217, 0.28) !important; }
+html.light .border-purple-500\/30  { border-color: rgba(109, 40, 217, 0.35) !important; }
+html.light .border-cyan-500\/20    { border-color: rgba(8, 145, 178, 0.30) !important; }
+
+/* ═══════════════════════════════════════════════════
+   FORM INPUT / TEXTAREA / SELECT
+   ═══════════════════════════════════════════════════ */
+
+html.light input,
+html.light textarea,
+html.light select {
+  background-color: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.15) !important;
+  color: #0f172a !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder { color: #94a3b8 !important; }
+
+/* Code editor textarea */
+html.light textarea.bg-transparent { 
+  background-color: transparent !important; 
+  color: #1e293b !important; 
+}
+
+/* Select dropdown options */
+html.light select option {
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+/* Focus rings */
+html.light input:focus,
+html.light textarea:focus,
+html.light select:focus {
+  border-color: #7c3aed !important;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.15) !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   COMPONENT-SPECIFIC FIXES
+   ═══════════════════════════════════════════════════ */
+
+/* Sidebar — XP progress bar track */
+html.light .bg-purple-950\/40 { background-color: rgba(109, 40, 217, 0.12) !important; }
+
+/* Chat message bubbles */
+html.light .bg-purple-600  { background-color: #7c3aed !important; }
+
+/* Code editor line number gutter */
+html.light .text-gray-700.select-none { color: #94a3b8 !important; }
+
+/* Dimmed/faded labels inside chat messages (opacity-60) */
+html.light .opacity-60 { opacity: 0.75 !important; }
+
+/* Prose AI review panel */
+html.light .prose-invert p,
+html.light .prose-invert li,
+html.light .prose-invert code,
+html.light .prose-invert strong { color: #334155 !important; }
+
+/* Badge/tag labels like course code chips */
+html.light .bg-purple-950\/20.border-purple-500\/25 { 
+  background-color: rgba(109, 40, 217, 0.08) !important;
+}
+
+/* Navbar "Systems Active" badge */
+html.light .bg-cyan-950\/20 { background-color: rgba(8, 145, 178, 0.08) !important; }
+
+/* AI Professor Active pulsing node in sidebar */
+html.light .bg-cyan-400 { background-color: #0369a1 !important; }
+
+/* Gradient hero text stays vibrant */
+html.light .bg-gradient-to-r.from-purple-400.via-pink-400.to-cyan-400 {
+  background-image: linear-gradient(to right, #7c3aed, #db2777, #0891b2) !important;
+}
+
+/* Disabled buttons */
+html.light .disabled\:bg-purple-900 { background-color: #c4b5fd !important; }
+html.light .disabled\:bg-purple-800 { background-color: #c4b5fd !important; }
