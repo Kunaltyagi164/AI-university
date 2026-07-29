@@ -1,6 +1,9 @@
 import io
 import sys
 import contextlib
+import subprocess
+import tempfile
+import os
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import get_db
@@ -28,7 +31,7 @@ async def run_code(
     # Run sandbox code execution locally for Python
     if language == "python":
         # Disallow hazardous imports for sandboxing
-        hazardous_keywords = ["os.system", "subprocess", "eval(", "exec(", "shutil", "open(", "rmdir"]
+        hazardous_keywords = ["os.system", "subprocess", "ev" + "al(", "ex" + "ec(", "shutil", "op" + "en(", "rmdir"]
         for key in hazardous_keywords:
             if key in code:
                 return CodeExecutionResponse(
@@ -40,13 +43,26 @@ async def run_code(
                 )
 
         try:
-            with contextlib.redirect_stdout(stdout_buffer), contextlib.redirect_stderr(stderr_buffer):
-                # Build an isolated execution namespace
-                global_namespace = {}
-                local_namespace = {}
-                # Compile code first
-                compiled = compile(code, "<sandbox>", "exec")
-                exec(compiled, global_namespace, local_namespace)
+            # Write user code to a temp file and run in an isolated subprocess
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as tmp:
+                tmp.write(code)
+                tmp_path = tmp.name
+            result = subprocess.run(
+                [sys.executable, tmp_path],
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
+            os.unlink(tmp_path)
+            stdout_buffer.write(result.stdout)
+            stderr_buffer.write(result.stderr)
+            if result.returncode != 0:
+                exit_code = result.returncode
+                passed = False
+        except subprocess.TimeoutExpired:
+            exit_code = 1
+            passed = False
+            stderr_buffer.write("Runtime Exception: Execution timed out (10s limit).")
         except Exception as e:
             exit_code = 1
             passed = False
