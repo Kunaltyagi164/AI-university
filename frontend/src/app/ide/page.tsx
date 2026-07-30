@@ -15,6 +15,7 @@ import {
   FolderOpen,
   XCircle
 } from "lucide-react";
+import PomodoroTimer from "@/components/PomodoroTimer";
 
 const LANGUAGE_TEMPLATES: Record<string, string> = {
   python: `# NOVA AI Coding Lab — Python Sandbox
@@ -232,6 +233,7 @@ export default function IdePage() {
             </div>
 
             <div className="flex items-center space-x-2">
+              <PomodoroTimer />
               <button
                 onClick={handleReset}
                 className="p-1.5 hover:bg-white/5 border border-transparent rounded text-xs text-gray-400 hover:text-white flex items-center gap-1 cursor-pointer"

@@ -19,7 +19,9 @@ import {
   Sun,
   Moon,
   User,
-  BarChart2
+  BarChart2,
+  Layers,
+  Flame
 } from "lucide-react";
 
 export default function Sidebar() {
@@ -84,7 +86,9 @@ export default function Sidebar() {
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { name: "AI Classroom", href: "/classroom", icon: MessageSquareCode },
     { name: "Coding Labs", href: "/ide", icon: Code2 },
+    { name: "Daily Challenge", href: "/challenge", icon: Flame, badge: true },
     { name: "Exams Portal", href: "/exams", icon: ShieldAlert },
+    { name: "Flashcards", href: "/flashcards", icon: Layers },
     { name: "Research Lab", href: "/research", icon: BookOpen },
     { name: "Leaderboard", href: "/leaderboard", icon: BarChart2 },
     { name: "My Profile", href: "/profile", icon: User },
@@ -166,6 +170,9 @@ export default function Sidebar() {
             >
               <Icon className={`mr-3 h-5 w-5 ${isActive ? "text-purple-500" : "text-theme-fg/50"}`} />
               {item.name}
+              {(item as any).badge && !isActive && (
+                <span className="ml-auto h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+              )}
             </Link>
           );
         })}

@@ -158,5 +158,27 @@ export const api = {
   // Certificates
   async getCertificate(courseId: number) {
     return request(`/certificates/${courseId}`);
-  }
+  },
+
+  // Daily Challenges
+  async getDailyChallenge() {
+    return request("/challenges/daily");
+  },
+
+  async submitChallenge(payload: { challenge_id: string; passed: boolean }) {
+    return request("/challenges/submit", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+
+  // Study Analytics
+  async getAnalytics() {
+    return request("/admin/analytics");
+  },
+
+  // Flashcards (uses existing lesson detail endpoint)
+  async getFlashcards(lessonId: number) {
+    return request(`/course/lesson/${lessonId}`);
+  },
 };
