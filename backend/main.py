@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import engine, Base
-from app.routes import auth, onboarding, course, professor, ide, exams, research, admin, certificates
+from app.routes import auth, onboarding, course, professor, ide, exams, research, admin, certificates, challenges
 
 # Create database tables automatically for SQLite
 Base.metadata.create_all(bind=engine)
@@ -32,6 +32,7 @@ app.include_router(exams.router)
 app.include_router(research.router)
 app.include_router(admin.router)
 app.include_router(certificates.router)
+app.include_router(challenges.router)
 
 @app.get("/")
 def root():

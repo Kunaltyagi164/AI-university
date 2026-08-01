@@ -16,7 +16,10 @@ import {
   Play,
   CheckCircle2,
   Target,
-  ChevronRight
+  ChevronRight,
+  Trophy as ChallengeIcon,
+  Flame,
+  BarChart2
 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -28,6 +31,8 @@ export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [nextLesson, setNextLesson] = useState<{ courseId: number; lessonId: number; lessonTitle: string; courseTitle: string } | null>(null);
+  const [analytics, setAnalytics] = useState<any>(null);
+  const [dailyChallenge, setDailyChallenge] = useState<any>(null);
 
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("nova_token") : null;
@@ -65,6 +70,14 @@ export default function DashboardPage() {
 
         const memoryNodes = await api.getProfessorMemory();
         setMemories(Array.isArray(memoryNodes) ? memoryNodes : []);
+
+        // Load analytics and daily challenge in parallel
+        const [analyticsData, challengeData] = await Promise.all([
+          api.getAnalytics().catch(() => null),
+          api.getDailyChallenge().catch(() => null),
+        ]);
+        if (analyticsData) setAnalytics(analyticsData);
+        if (challengeData) setDailyChallenge(challengeData);
         
       } catch (err: any) {
         setError(err.message || "Failed to load degree roadmap. Try onboarding again.");
@@ -185,6 +198,61 @@ export default function DashboardPage() {
           </div>
           <p className="text-xs text-gray-600">{completedCourses} of {totalCourses} courses completed</p>
         </div>
+
+        {/* Study Analytics Chart */}
+        {analytics && (
+          <div className="glass-panel rounded-xl border border-white/[0.04] p-5 space-y-3">
+            <div className="flex justify-between items-center">
+              <p className="text-sm font-semibold text-white flex items-center gap-2">
+                <BarChart2 className="h-4 w-4 text-cyan-400" />
+                14-Day Study Activity
+              </p>
+              <span className="text-xs text-gray-500 font-mono">XP earned per day</span>
+            </div>
+            <div className="flex items-end gap-1 h-16">
+              {(analytics.days || []).map((day: any, i: number) => {
+                const maxXp = Math.max(...(analytics.days || []).map((d: any) => d.xp), 1);
+                const pct = day.xp > 0 ? Math.max((day.xp / maxXp) * 100, 8) : 4;
+                return (
+                  <div key={i} className="flex-1 flex flex-col items-center gap-1 group" title={`${day.date}: ${day.xp} XP, ${day.quizzes} quizzes`}>
+                    <div
+                      className={`w-full rounded-sm transition-all duration-300 ${
+                        day.xp > 0
+                          ? "bg-gradient-to-t from-purple-600 to-cyan-500 group-hover:from-purple-500 group-hover:to-cyan-400"
+                          : "bg-white/5"
+                      }`}
+                      style={{ height: `${pct}%` }}
+                    />
+                    {i % 4 === 0 && (
+                      <span className="text-[8px] text-gray-600 font-mono">{day.date}</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Daily Challenge card */}
+        {dailyChallenge && (
+          <div
+            onClick={() => router.push("/challenge")}
+            className="flex items-center gap-4 bg-gradient-to-r from-amber-950/20 to-orange-950/10 border border-amber-500/25 p-5 rounded-2xl cursor-pointer hover:border-amber-500/50 transition-all group"
+          >
+            <div className="p-3 bg-amber-500/15 border border-amber-500/30 rounded-xl shrink-0">
+              <Flame className="h-6 w-6 text-amber-400 group-hover:scale-110 transition-transform" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-amber-400 font-mono uppercase tracking-widest">Daily Challenge</p>
+              <p className="text-sm font-bold text-white truncate mt-0.5">{dailyChallenge.title}</p>
+              <p className="text-xs text-gray-500 truncate">{dailyChallenge.difficulty} · {dailyChallenge.category} · {dailyChallenge.xp_reward} XP</p>
+            </div>
+            <div className="shrink-0 text-right">
+              <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">2× XP</span>
+              <ChevronRight className="h-5 w-5 text-gray-500 group-hover:text-amber-400 transition-colors mt-1 ml-auto" />
+            </div>
+          </div>
+        )}
 
         {/* Content Layout Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

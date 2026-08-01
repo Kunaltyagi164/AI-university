@@ -27,6 +27,23 @@ function generateNotificationsFromProfile(profile: any): Notification[] {
   const notes: Notification[] = [];
   const now = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
+  // ── Streak Guard ──────────────────────────────────────────────────────────
+  if (profile.streak > 0 && profile.last_active_at) {
+    const lastActive = new Date(profile.last_active_at);
+    const hoursInactive = (Date.now() - lastActive.getTime()) / (1000 * 60 * 60);
+    if (hoursInactive >= 20) {
+      notes.push({
+        id: `streak-guard-${profile.streak}`,
+        type: "warning",
+        title: `🔥 Your ${profile.streak}-day streak is at risk!`,
+        message: `You haven't studied today. Study something now to protect your streak before midnight!`,
+        timestamp: now,
+        read: false,
+      });
+    }
+  }
+  // ─────────────────────────────────────────────────────────────────────────
+
   if (profile.xp >= 100) {
     notes.push({
       id: "xp-milestone",

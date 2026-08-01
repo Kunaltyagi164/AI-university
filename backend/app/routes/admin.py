@@ -89,3 +89,49 @@ def get_leaderboard(
             "career_goal": profile.career_goal,
         })
     return leaderboard
+
+
+@router.get("/analytics")
+def get_user_analytics(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Returns the current user's study activity for the past 14 days."""
+    from app.models import QuizAttempt
+    import datetime
+
+    today = datetime.datetime.utcnow().date()
+    days = []
+    for i in range(13, -1, -1):
+        day = today - datetime.timedelta(days=i)
+        day_start = datetime.datetime.combine(day, datetime.time.min)
+        day_end = datetime.datetime.combine(day, datetime.time.max)
+
+        attempts = (
+            db.query(QuizAttempt)
+            .filter(
+                QuizAttempt.user_id == current_user.id,
+                QuizAttempt.created_at >= day_start,
+                QuizAttempt.created_at <= day_end,
+            )
+            .all()
+        )
+
+        xp_earned = sum(50 if a.passed else 10 for a in attempts)
+        quiz_count = len(attempts)
+        avg_score = round(sum(a.score for a in attempts) / quiz_count, 1) if quiz_count else 0
+
+        days.append({
+            "date": day.strftime("%m/%d"),
+            "xp": xp_earned,
+            "quizzes": quiz_count,
+            "avg_score": avg_score,
+        })
+
+    profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
+    return {
+        "days": days,
+        "total_xp": profile.xp if profile else 0,
+        "total_level": profile.level if profile else 1,
+        "streak": profile.streak if profile else 0,
+    }
